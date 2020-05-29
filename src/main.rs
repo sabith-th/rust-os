@@ -10,9 +10,19 @@ mod serial;
 use core::panic::PanicInfo;
 use crate::QemuExitCode::Success;
 
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
+    loop {}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    serial_println!("[failed]\n");
+    serial_println!("Error: {}\n", info);
+    exit_qemu(QemuExitCode::Failed);
     loop {}
 }
 
@@ -25,7 +35,7 @@ pub extern "C" fn _start() -> ! {
     println!("Avengers {}", "Assemble");
 
     #[cfg(test)]
-    test_main();
+        test_main();
 
     loop {}
 }
@@ -38,13 +48,6 @@ fn test_runner(tests: &[&dyn Fn()]) {
     }
 
     exit_qemu(QemuExitCode::Success);
-}
-
-#[test_case]
-fn trivial_assertion() {
-    serial_print!("Trivial assertion...");
-    assert_eq!(1, 1);
-    serial_println!("[ok]");
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
