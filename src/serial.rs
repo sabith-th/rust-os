@@ -1,5 +1,6 @@
-use uart_16550::SerialPort;
 use spin::Mutex;
+use uart_16550::SerialPort;
+
 use lazy_static::lazy_static;
 
 lazy_static! {

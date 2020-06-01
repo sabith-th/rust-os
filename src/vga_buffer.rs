@@ -1,7 +1,12 @@
-use volatile::Volatile;
 use core::fmt;
-use lazy_static::lazy_static;
+
 use spin::Mutex;
+use volatile::Volatile;
+
+use lazy_static::lazy_static;
+
+#[cfg(test)]
+use crate::{serial_print, serial_println};
 
 #[allow(dead_code)]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -139,9 +144,6 @@ pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
 }
-
-#[cfg(test)]
-use crate::{serial_print, serial_println};
 
 #[test_case]
 fn test_println_simple() {
