@@ -27,10 +27,14 @@ pub extern "C" fn _start() -> ! {
 
     rust_os::init();
 
-    x86_64::instructions::interrupts::int3();
+    fn stack_overflow() {
+        stack_overflow();
+    }
+
+    stack_overflow();
 
     #[cfg(test)]
-        test_main();
+    test_main();
 
     println!("I am Iron Man!");
     loop {}
